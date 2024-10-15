@@ -1,0 +1,35 @@
+package org.example.controller;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.TimeZone;
+
+
+@WebFilter(value = "/time/*")
+public class TimeFiter extends HttpFilter {
+    @Override
+    protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+        String value = req.getParameter("timezone");
+        if (isValidTimeZone(value)) {
+            chain.doFilter(req, res);
+        }else {
+            res.setStatus(400); // Set unauthorized status for invalid timezone
+            res.setContentType("text/html");
+            res.getWriter().write("<h1>Invalid timezone: " + value + "</h1>");
+            res.getWriter().close();
+        }
+
+    }
+    public static boolean isValidTimeZone(String timeZoneStr) {
+        Set<String> availableZoneIds = Set.of(TimeZone.getAvailableIDs());
+        return availableZoneIds.contains(timeZoneStr);
+    }
+
+}
