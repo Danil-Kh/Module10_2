@@ -13,21 +13,24 @@ import java.util.TimeZone;
 
 
 @WebFilter(value = "/time/*")
-public class TimeFiter extends HttpFilter {
+public class TimezoneValidateFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         String value = req.getParameter("timezone");
-        if (isValidTimeZone(value)) {
+        if (isValidTimeZone(value) ) {
             chain.doFilter(req, res);
         }else {
-            res.setStatus(400); // Set unauthorized status for invalid timezone
+            res.setStatus(400);
             res.setContentType("text/html");
             res.getWriter().write("<h1>Invalid timezone: " + value + "</h1>");
             res.getWriter().close();
         }
 
     }
-    public static boolean isValidTimeZone(String timeZoneStr) {
+    public boolean isValidTimeZone(String timeZoneStr) {
+        if (timeZoneStr == null || timeZoneStr.isEmpty()) {
+            return true;
+        }
         Set<String> availableZoneIds = Set.of(TimeZone.getAvailableIDs());
         return availableZoneIds.contains(timeZoneStr);
     }
