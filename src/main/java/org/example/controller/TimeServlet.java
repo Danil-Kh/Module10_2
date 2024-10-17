@@ -20,7 +20,7 @@ public class TimeServlet extends HttpServlet {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (value != null || value.isEmpty()) {
-            value = "GMT";
+            value = "UTC";
         }
         df.setTimeZone(TimeZone.getTimeZone(value));
         resp.setContentType("text/html");
